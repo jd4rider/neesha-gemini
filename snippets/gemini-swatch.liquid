@@ -36,7 +36,7 @@
 
       {%- assign downcase_option = option | downcase -%}
       {%- if downcase_option contains 'color' or downcase_option contains 'colour' -%}
-		<script>
+		  <script>
           $(window).load(function() {
             var selected_color = $("input[id^='swatch']:checked").attr('value');
             $("input[id^='swatch']").click(function(){
@@ -49,13 +49,13 @@
             
             $('.product-gallery__item').click(function(){
             	var img_url = $(this).find('img').attr('src');
-              	selected_variant = img_url.substring(img_url.indexOf("?")+1).replace('v=', '');
+              selected_variant = img_url.substring(img_url.indexOf("?")+1).replace('v=', '');
               $('.js-color-swatch-label').each(function(i){
               	var stylest = $(this).attr('style');
                 stylest = stylest.substring(stylest.indexOf("?")+1, stylest.indexOf("?")+(selected_variant.length + 3)).replace('v=', '');
                 if(stylest == selected_variant){
                   	var id_selector = $(this).attr('for');
-                	$('#'+id_selector).attr('checked', 'checked');
+                	  $('#'+id_selector).attr('checked', 'checked');
                     $('#'+id_selector).prop('checked', true);
                   	$('#'+id_selector).click();
                   	$('#'+id_selector).change();

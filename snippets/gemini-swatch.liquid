@@ -36,6 +36,16 @@
 
       {%- assign downcase_option = option | downcase -%}
       {%- if downcase_option contains 'color' or downcase_option contains 'colour' -%}
+		    <script>
+          $(window).load(function() {
+            var selected_color = $("input[id^='swatch']:checked").attr('value');
+            $("input[id^='swatch']").click(function(){
+              selected_color = $(this).attr('value');
+              $('.swatch__title').first().html('Color: '+ selected_color);
+            })
+            $('.swatch__title').first().html('Color: '+ selected_color);
+          });
+        </script>
         {%- assign is_color_swatch = true -%}
         {%- assign color_swatch_shape = settings.color_swatch_shape -%}
         {%- assign swatch_element_class = swatch_element_class | append: ' ' | append: 'color' | append: ' ' | append: color_swatch_shape -%}

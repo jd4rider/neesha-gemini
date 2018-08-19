@@ -1,0 +1,110 @@
+<div class="mobile-menu" id="drawer">
+  <a href="javascript:;" class="mobile-nav__close js-mobile-nav-close">
+    {% include 'icon-close' %}
+  </a>
+  <div class="mobile-menu__inner">
+    <div class="mobile-menu__extra">
+      {%- if section.settings.show_currency -%}
+        {% include 'currency-picker', additional_class: 'large-up--hide' %}
+      {%- endif -%}
+      <div class="mobile-menu__link">
+        {%- if shop.customer_accounts_enabled and section.settings.account or section.settings.show_account -%}
+          <a href="/account">
+            <i class="fa fa-user-circle"></i>
+          </a>
+        {%- endif -%}
+        {%- if section.settings.wishlist -%}
+          <a href="{%- if settings.wishlist_page_handle != blank -%}/pages/{{- settings.wishlist_page_handle -}}{%- endif -%}">
+              <i class="fa fa-heart-o"></i>
+          </a>
+        {%- endif -%}
+        <a class="header__cart-btn" href="/cart">
+          {% include 'icon-cart' %}
+          <span class="js-cart-count">{{ cart.item_count }}</span>
+        </a>
+      </div>
+    </div>
+    <nav role="navigation">
+      {%- assign main_menu_handle = section.settings.main_linklist -%}
+      {%- assign links = linklists[main_menu_handle].links -%}
+
+      {%- if links != blank -%}
+        <ul class="mobile-nav">
+          {%- for link in links -%}
+            {%- assign link_url = link.url -%}
+            {%- assign link_title = link.title | escape -%}
+            {%- assign link_handle = link_title | handleize -%}
+            {%- assign link_level_class = '' -%}
+
+            {%- if link.links != blank or linklists[link_handle].links != blank -%}
+              {%- if link.links != blank -%}
+                {%- assign child_links = link.links -%}
+              {%- elsif linklists[link_handle].links != blank -%}
+                {%- assign child_links = linklists[link_handle].links -%}
+              {%- endif -%}
+
+              <li class="mobile-nav--has-submenu {% if link.active %} mobile-nav--active{% endif %}">
+                <a href="{{ link_url }}" class="mobile-nav__link">
+                  {{- link_title -}}
+                  <span class="icon-down">
+                    {% include 'icon-arrow-down' %}
+                  </span>
+                </a>
+                <ul class="mobile-nav__submenu">
+                  {%- for child_link in child_links -%}
+                    {%- assign child_link_url = child_link.url -%}
+                    {%- assign child_link_title = child_link.title | escape -%}
+                    {%- assign child_link_handle = child_link.handle -%}
+
+                    {%- if child_link.links != blank or linklists[child_link_handle].links != blank -%}
+                      {%- if child_link.links != blank -%}
+                        {%- assign grandchild_links = child_link.links -%}
+                      {%- elsif linklists[child_link_handle].links != blank -%}
+                        {%- assign grandchild_links = linklists[child_link_handle].links -%}
+                      {%- endif -%}
+
+                      <li class="mobile-nav--has-submenu {% if child_link.active %} mobile-nav--active{% endif %}">
+                        <a href="{{ child_link_url }}" class="mobile-nav__link">
+                          {{- child_link_title -}}
+                          <span class="icon-down">
+                            {% include 'icon-arrow-down' %}
+                          </span>
+                        </a>
+                        <ul class="mobile-nav__submenu">
+                          {%- for grandchild_link in grandchild_links -%}
+                            <li class="{% if grandchild_link.active %}mobile-nav--active{% endif %}">
+                              <a href="{{ grandchild_link.url }}" class="mobile-nav__link">
+                                {{- grandchild_link.title | escape -}}
+                              </a>
+                            </li>
+                          {%- endfor -%}
+                        </ul>
+                      </li>
+                    {%- else -%}
+                      <li class="{% if child_link.active %}mobile-nav--active{% endif %}">
+                        <a href="{{ child_link_url }}" class="mobile-nav__link">
+                          {{- child_link_title -}}
+                        </a>
+                      </li>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </ul>
+              </li>
+            {%- else -%}
+              <li class="{% if link.active %} mobile-nav--active{% endif %}">
+                <a href="{{ link_url }}" class="mobile-nav__link">
+                  {{- link_title -}}
+                </a>
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </nav>
+  </div>
+  <div class="mobile-nav__footer">
+    {% if section.settings.show_social %}
+      {% include 'social-connect' %}
+    {% endif %}
+  </div>
+</div>

@@ -1,0 +1,101 @@
+<nav class="navigation">
+  {%- assign main_menu_handle = section.settings.main_linklist -%}
+  {%- assign links = linklists[main_menu_handle].links -%}
+
+  {%- if links != blank -%}
+    <ul class="site-nav">
+      {%- for link in links -%}
+        {%- assign link_url = link.url -%}
+        {%- assign link_title = link.title | escape -%}
+        {%- assign link_handle = link_title | handleize -%}
+        {%- assign link_level_class = '' -%}
+
+        {%- if link.links != blank or linklists[link_handle].links != blank -%}
+          {%- assign link_level_class = 'parent' -%}
+          {%- assign columns = 0 -%}
+          {%- if link.links != blank -%}
+            {%- assign child_links = link.links -%}
+          {%- elsif linklists[link_handle].links != blank -%}
+            {%- assign child_links = linklists[link_handle].links -%}
+          {%- endif -%}
+
+          {%- for child_link in child_links -%}
+            {%- assign columns = columns | plus: 1 -%}
+            {%- if child_link.links != blank or linklists[child_link.handle].links != blank -%}
+              {%- assign link_level_class = 'grandparent' -%}
+            {%- endif -%}
+          {%- endfor -%}
+
+          {%- if section.settings.mega_image != blank -%}
+            {%- assign columns = columns | plus: 1  -%}
+          {%- endif -%}
+
+          <li class="site-nav--has-submenu {{ link_level_class }} columns-{{ columns }} {% if link.active %} site-nav--active{% endif %} {% if forloop.last %} site-nav--last {% endif %}">
+            <a href="{{ link_url }}" class="site-nav__link">
+              {{ link_title }}
+              {% include 'icon-arrow-down' %}
+            </a>
+            <ul class="site-nav__submenu">
+              {%- for child_link in child_links -%}
+                {%- assign child_link_url = child_link.url -%}
+                {%- assign child_link_title = child_link.title | escape -%}
+                {%- assign child_link_handle = child_link.handle -%}
+
+                {%- if child_link.links != blank or linklists[child_link_handle].links != blank -%}
+                  {%- if child_link.links != blank -%}
+                    {%- assign grandchild_links = child_link.links -%}
+                  {%- elsif linklists[child_link_handle].links != blank -%}
+                    {%- assign grandchild_links = linklists[child_link_handle].links -%}
+                  {%- endif -%}
+
+                  <li class="site-nav--has-submenu {% if child_link.active %} site-nav--active{% endif %}">
+                    <a href="{{ child_link_url }}" class="site-nav__link">
+                      {{ child_link_title }}
+                    </a>
+                    <ul class="site-nav__submenu">
+                      {%- for grandchild_link in grandchild_links -%}
+                        <li class="{% if grandchild_link.active %}site-nav--active{% endif %}">
+                          <a href="{{ grandchild_link.url }}" class="site-nav__link">
+                            {{- grandchild_link.title | escape -}}
+                          </a>
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  </li>
+                {%- else -%}
+                  <li class="{% if child_link.active %}site-nav--active{% endif %}">
+                    <a href="{{ child_link_url }}" class="site-nav__link">
+                      {{- child_link_title -}}
+                    </a>
+                  </li>
+                {%- endif -%}
+              {%- endfor -%}
+
+              {%- if link_level_class == 'grandparent' -%}
+                {% if section.settings.mega_image != blank %}
+                  <li class="site-nav--mega">
+                    <div class="site-nav--mega-image">
+                      <a href="{{ section.settings.mega_link }}">
+                        <img
+                          src="{{ section.settings.mega_image | img_url: 'master' }}"
+                          srcset="{{ section.settings.mega_image | img_url: 'master' }} 1x, {{ section.settings.mega_image | img_url: 'master', scale: 2 }} 2x"
+                          alt="{{ section.settings.mega_image.alt | default: shop.name }}"
+                          >
+                      </a>
+                    </div>
+                  </li>
+                {% endif %}
+              {%- endif -%}
+            </ul>
+          </li>
+        {%- else -%}
+          <li class="{% if link.active %} site-nav--active{% endif %}">
+            <a href="{{ link_url }}" class="site-nav__link">
+              {{- link_title -}}
+            </a>
+          </li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+  {%- endif -%}
+</nav>
